@@ -1951,7 +1951,7 @@ lsy.pay = (()=> {
 							'배당 좌석은 ' + $('#seat_number_list').text() + '입니다.');
 					sessionStorage.setItem('movieName',$('#movie_name_text').text());
 					sessionStorage.setItem('placeName',$('#theater_detail>a').text());
-					sessionStorage.setItem('theaterName',$('#theater_detail>a').text());
+					sessionStorage.setItem('theaterNumber',$('#theater_number').text());
 					sessionStorage.setItem('price',$('#totalPrice').text());
 					sessionStorage.setItem('seatInfo',$('#seat_number_list').text());
 					sessionStorage.setItem('movieTime',$('#seat_select_time_detail>b:nth-child(3)').text());
@@ -1965,7 +1965,7 @@ lsy.pay = (()=> {
 					$('#movie_id_text').val('예약된 영화 : '+$$('movieName'));
 					$('#movie_place_text').val('예약된 지역 : '+$$('placeName'));
 					$('#movie_date_text').val('예약된 날짜 : '+$$('selectDate'));
-					$('#movie_theater_text').val('예약된 관 : '+$$('theaterName'));
+					$('#movie_theater_text').val('예약된 관 : '+$$('theaterNumber'));
 					$('#movie_time_text').val('예약된 시간 : '+$$('movieTime'));
 					$('#movie_price_text').val('가격 : '+$$('price')+'원');
 					$('#movie_seat_text').val('좌석 정보 : '+$$('seatInfo'));
