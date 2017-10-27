@@ -792,7 +792,7 @@ var reservationUI = {
 		+            '</div>'
 		+            '</form>'
 		+            '<!-- //작성 영역 -->'
-		+			'<div class="movie-diary-wrap none" style="padding:0px; cursor:pointer"><a class="round black"><span>홈으로 가기</span></a></div>'
+		+			'<div class="movie-diary-wrap none" style="padding:0px;"><a class="round black" style="cursor:pointer;" onclick="lsy.main.init()"><span>홈으로 가기</span></a></div>'
 		+       '</div>'
 	},
 	selectSeat : ()=> {
@@ -1640,12 +1640,22 @@ var childCount;
 lsy.seatCount=(()=> {
 	var init = (x,y)=> {
 		onCreate(x,y);
+		//진행해야 될 부분(카운트 토탈 버그잡기)
+
 		if (x==0) {
 			total=0;
 		}
-		count=0;
-		$('#seats_list_ul>li>')
 		alert('토탈은'+total);
+		if (total!=count) {
+			$('#tnb_step_btn_right').removeClass('btn-right on');
+			$('#tnb_step_btn_right').addClass('btn-right');
+			$('#tnb_step_btn_right').attr('onclick','false');
+		}
+		else {
+			$('#tnb_step_btn_right').removeClass('btn-right');
+			$('#tnb_step_btn_right').addClass('btn-right on');
+			$('#tnb_step_btn_right').attr('onclick','lsy.pay.init()');
+		}
 	};
 	var onCreate = (x,y)=> {
 		setContentView();
@@ -1719,6 +1729,12 @@ lsy.seatCount=(()=> {
 			}
 		}
 		
+		if (total < count) {
+			alert('선택하신 좌석이 인원수보다 많습니다.');
+			total = count;
+			return false;
+		}
+		
 		if (total==0) {
 			$('#background').css({'background-color':'rgba(0, 0, 0, 0.15)'});
 			$('#background').addClass('mouse_block');
@@ -1764,7 +1780,6 @@ lsy.seatCount=(()=> {
 				$('#people_count>span:nth-child(4)').text(','+childMsg);
 			}
 		}
-		
 		$('#nop_group_'+age+'>ul>li').removeClass('selected');
 		$('#select_'+age+x).addClass('selected');
 		$('#people_count').css({'display':'inline-block'});
@@ -1795,6 +1810,7 @@ lsy.seatCount=(()=> {
 			}
 		}
 	};
+	
 	var setContentView = ()=> {
 		
 	};
@@ -1850,6 +1866,7 @@ lsy.selectDetail=(()=>{
 		alert('현재 카운트는'+count);
 		if (count>total) {
 			alert('좌석을 더이상 선택할수 없습니다');
+			count=count-1;
 			return false;
 		}
 		$('#'+x+'>span>input').val('1');
@@ -1940,8 +1957,7 @@ lsy.pay = (()=> {
 				'seat_list' : str
 			}),
 			success : d => {
-				alert(typeof d.apply);
-				if (typeof d.apply == "number") {
+				if (d.reservation === "success") {
 					alert('예약 되셨습니다');
 					alert('예약된 아이디는' + $$('member_id') + '이고, 예약된 영화는 ' + $('#movie_name_text').text() +
 							'이고, 예약된 극장은 ' + $('#theater_detail>a').text()+'이고, 예약된 날짜는 '+$$('selectDate') +
@@ -1951,6 +1967,7 @@ lsy.pay = (()=> {
 							'배당 좌석은 ' + $('#seat_number_list').text() + '입니다.');
 					sessionStorage.setItem('movieName',$('#movie_name_text').text());
 					sessionStorage.setItem('placeName',$('#theater_detail>a').text());
+					sessionStorage.setItem('theaterName',$('#theater_detail>a').text());
 					sessionStorage.setItem('theaterNumber',$('#theater_number').text());
 					sessionStorage.setItem('price',$('#totalPrice').text());
 					sessionStorage.setItem('seatInfo',$('#seat_number_list').text());
@@ -1970,6 +1987,14 @@ lsy.pay = (()=> {
 					$('#movie_price_text').val('가격 : '+$$('price')+'원');
 					$('#movie_seat_text').val('좌석 정보 : '+$$('seatInfo'));
 					$('#movie_count_text').val('총 인원 : '+$$('total_count')+'명');
+					sessionStorage.setItem('movieName','');
+					sessionStorage.setItem('placeName','');
+					sessionStorage.setItem('theaterName','');
+					sessionStorage.setItem('theaterNumber','');
+					sessionStorage.setItem('price','');
+					sessionStorage.setItem('seatInfo','');
+					sessionStorage.setItem('movieTime','');
+					sessionStorage.setItem('total_count','');
 				}
 			},
 			error : (x,s,m)=>{
@@ -1979,6 +2004,13 @@ lsy.pay = (()=> {
 		alert(str);
 	}
 	return {init:init}
+})();
+
+lsy.main = (()=> {
+	var init = ()=> {
+		location.href=$$('x')+'/home';
+	};
+	return {init:init};
 })();
 
 lsy.session=

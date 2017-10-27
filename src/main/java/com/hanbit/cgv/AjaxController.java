@@ -30,6 +30,7 @@ import com.hanbit.cgv.service.IGetService;
 import com.hanbit.cgv.service.IListService;
 import com.hanbit.cgv.service.IPostService;
 import com.hanbit.cgv.service.IPutService;
+import com.hanbit.cgv.service.TransactionService;
 import com.hanbit.cgv.util.FileUpload;
 
 
@@ -38,6 +39,7 @@ public class AjaxController {
 	@Autowired Command command;
 	@Autowired Mapper mapper;
 	@Autowired FileUpload fileupload;
+	@Autowired TransactionService tx;
 	IListService listService=null;
 	IGetService getService=null;
 	IPostService postService=null;
@@ -89,26 +91,8 @@ public class AjaxController {
 	@RequestMapping(value="/post/reservation",method=RequestMethod.POST)
 	   public @ResponseBody Map<?,?> postReservation(@RequestBody Map<String,Object> param){
 	      Map<String,Object> map=new HashMap<>();
-	      command.setTable("reservation");
-	      command.setParam(param);
-	      
-	      map.put("result", new IPostService() {
-	         @Override
-	         public int excute(Object o) {
-	            return mapper.insert(command);
-	         }
-	      }.excute(command));
-	      if (map.get("result").equals(1)) {
-	         System.out.println("예약은 됐다");
-	         command.setTable("apply");
-	         command.setParam(param);
-	         map.put("apply", new IPutService() {
-	            @Override
-	            public int excute(Object o) {
-	               return mapper.update(command);
-	            }
-	         }.excute(command));
-	      }
+	      tx.reservation(param);
+	      map.put("reservation", "success");
 	      return map;
 	   }
 	
